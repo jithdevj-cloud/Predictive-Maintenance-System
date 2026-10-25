@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PredictMaint — About the System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <style>
+    .about-page {
+      --ab: #f59e0b;          /* amber primary */
+      --ab-dim: rgba(245,158,11,0.10);
+      --ab-glow: rgba(245,158,11,0.22);
+      --ab-border: rgba(245,158,11,0.35);
+      --bg-ab-panel: #12110e;
+      --bg-ab-card:  #1c1a14;
+      --bg-ab-input: #0e0d0a;
+      --border-ab:   #2a2518;
+      --border-ab-l: #3a3220;
+    }
+
+    .about-page body,
+    .about-page { background-color: var(--bg-ab-panel); }
+
+    /* Navbar gets amber tint on this page */
+    .about-page .navbar {
+      background: var(--bg-ab-card) !important;
+      border-bottom: 1px solid var(--border-ab);
+    }
+    .about-page .navbar-brand { color: var(--ab) !important; }
+    .about-page .brand-icon {
+      background: var(--ab-dim);
+      border-color: var(--ab);
+    }
+    .about-page .nav-link:hover,
+    .about-page .nav-link.active {
+      color: var(--ab) !important;
+      background: var(--ab-dim);
+    }
+
+    /* Page header */
+    .about-hero {
+      background: var(--bg-ab-card);
+      border-bottom: 1px solid var(--border-ab);
+      padding: 3.5rem 0 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .about-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--ab);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 0.85rem;
+    }
+    .about-title {
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    .about-title span { color: var(--ab); }
+    .about-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      max-width: 520px;
+    }
+
+    /* Cards */
+    .ab-card {
+      background: var(--bg-ab-card);
+      border: 1px solid var(--border-ab);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .ab-card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--ab);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--border-ab);
+    }
+
+    /* Workflow steps */
+    .workflow-step {
+      display: flex;
+      gap: 1rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--border-ab);
+      align-items: flex-start;
+    }
+    .workflow-step:last-child { border-bottom: none; }
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--ab);
+      background: var(--ab-dim);
+      border: 1px solid var(--ab-border);
+      border-radius: 6px;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.2rem;
+    }
+    .step-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Page cards (the 4 page tiles) */
+    .page-tile {
+      background: var(--bg-ab-input);
+      border: 1px solid var(--border-ab);
+      border-radius: 10px;
+      padding: 1.25rem;
+      height: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .page-tile:hover {
+      border-color: var(--ab);
+      box-shadow: 0 0 20px var(--ab-glow);
+    }
+    .page-tile-route {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--ab);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.5px;
+    }
+    .page-tile-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+    }
+    .page-tile-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* Data row */
+    .ab-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border-ab);
+    }
+    .ab-row:last-child { border-bottom: none; }
+    .ab-key {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .ab-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ab);
+    }
+
+    /* Feature pill list */
+    .feature-pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .feature-pill {
+      background: var(--ab-dim);
+      border: 1px solid var(--ab-border);
+      color: var(--ab);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      border-radius: 50px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Tech stack icons */
+    .tech-row {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--border-ab);
+    }
+    .tech-row:last-child { border-bottom: none; }
+    .tech-icon {
+      width: 34px; height: 34px;
+      background: var(--ab-dim);
+      border: 1px solid var(--ab-border);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .tech-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .tech-detail {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
+    }
+
+    /* Risk badge table */
+    .risk-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border-ab);
+    }
+    .risk-row:last-child { border-bottom: none; }
+    .risk-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    .about-page footer {
+      background: var(--bg-ab-card);
+      border-top: 1px solid var(--border-ab);
+    }
+
+    /* CTA button amber */
+    .btn-amber {
+      background: var(--ab);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 0.7rem 1.75rem;
+      border-radius: 8px;
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s, box-shadow 0.2s;
+    }
+    .btn-amber:hover {
+      opacity: 0.88;
+      box-shadow: 0 0 20px var(--ab-glow);
+      color: #000;
+    }
+
+    /* divider amber */
+    .ab-divider {
+      border: none;
+      border-top: 1px solid var(--border-ab);
+      margin: 1.25rem 0;
+    }
+
+    /* Responsive */
+    @media(max-width:768px) {
+      .about-hero { padding: 2.5rem 0 2rem; }
+    }
+  </style>
+</head>
+
+<body class="about-page">
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      <span class="brand-icon">⚙</span>
+      PredictMaint
+    </a>
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('prediction') }}">Predict</a></li>
+        <li class="nav-item"><a class="nav-link active" href="{{ url_for('about') }}">About</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="about-hero">
+  <div class="container">
+
+    <h1 class="about-title">About <span>PredictMaint</span></h1>
+    <p class="about-subtitle">
+      System overview, application pages, prediction workflow, feature set,
+      and technology stack for this Flask-based maintenance scheduling tool.
+    </p>
+  </div>
+</div>
+
+<div class="container" style="padding: 3rem 0 5rem;">
+  <div class="row g-4">
+
+    <div class="col-lg-7">
+
+      <!-- System Overview -->
+      <div class="ab-card">
+        <p class="ab-card-title">System Overview</p>
+        <p style="color:var(--text-secondary); font-size:0.875rem; line-height:1.75; margin-bottom:1rem;">
+          <strong style="color:var(--text-primary);">PredictMaint</strong> is a web-based predictive
+          maintenance scheduling system built as the software deliverable of a machine learning
+          dissertation. It allows maintenance engineers and plant supervisors to enter live machine
+          operating parameters and instantly receive a failure risk prediction, probability breakdown,
+          and prioritised maintenance recommendations — all powered by a trained XGBoost classifier.
+        </p>
+        <div class="feature-pill-list">
+          <span class="feature-pill">Failure Prediction</span>
+          <span class="feature-pill">Risk Classification</span>
+          <span class="feature-pill">Maintenance Recommendations</span>
+          <span class="feature-pill">Probability Breakdown</span>
+          <span class="feature-pill">Input Summary</span>
+          <span class="feature-pill">Model Transparency</span>
+          <span class="feature-pill">Responsive UI</span>
+        </div>
+      </div>
+
+      <div class="ab-card">
+        <p class="ab-card-title">Prediction Workflow</p>
+
+        {% set steps = [
+          ('01', 'User Opens Prediction Form', 'The user navigates to /prediction and is presented with a structured input form grouped into Machine Identity, Thermal Parameters, and Mechanical Parameters sections.'),
+          ('02', 'User Enters Operating Parameters', 'Six values are entered: Product Type (L / M / H), Air Temperature [K], Process Temperature [K], Rotational Speed [rpm], Torque [Nm], and Tool Wear [min].'),
+          ('03', 'Form Submitted via HTTP POST', 'On submission, the form data is sent as a POST request to the /predict route in app.py. Client-side JavaScript shows a loading state on the button.'),
+          ('04', 'Flask Receives & Validates Input', 'Flask parses the form fields, converts Product Type to its label-encoded integer (L=0, M=1, H=2), and casts all values to the correct numeric types.'),
+          ('05', 'Feature Scaler Applied', 'The saved StandardScaler (Feature_Scaler.pkl) transforms the six input values using the mean and standard deviation computed from the training data.'),
+          ('06', 'XGBoost Model Runs Inference', 'The saved XGBoost classifier (Best_XGBoost_Model.pkl) receives the scaled input and returns a binary class prediction and a probability array [P(no failure), P(failure)].'),
+          ('07', 'Risk Level Assigned', 'Flask maps the failure probability to one of four risk levels: Low (<20%), Moderate (20–39%), High (40–69%), or Critical (≥70%).'),
+          ('08', 'Result Page Rendered', 'Flask renders result.html with the verdict, probabilities, risk level, contextual maintenance recommendations, and a summary of the original inputs.')
+        ] %}
+
+        {% for num, title, desc in steps %}
+        <div class="workflow-step">
+          <div class="step-num">{{ num }}</div>
+          <div>
+            <div class="step-title">{{ title }}</div>
+            <div class="step-desc">{{ desc }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <div class="col-lg-5">
+
+      <!-- Input Features -->
+      <div class="ab-card">
+        <p class="ab-card-title">Input Features</p>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:1rem;">
+          The six features used by the model after preprocessing. Identifier
+          columns (UDI, Product ID) and failure mode columns (TWF–RNF) are
+          excluded from the model input.
+        </p>
+        {% set feats = [
+          ('Type', 'L / M / H', 'Label encoded → 0, 1, 2'),
+          ('Air Temperature', '[K]', 'Typical range 295 – 305 K'),
+          ('Process Temperature', '[K]', 'Typical range 305 – 315 K'),
+          ('Rotational Speed', '[rpm]', 'Typical range 1 000 – 3 000'),
+          ('Torque', '[Nm]', 'Typical range 3 – 80 Nm'),
+          ('Tool Wear', '[min]', 'Typical range 0 – 260 min'),
+        ] %}
+        {% for name, unit, hint in feats %}
+        <div class="ab-row">
+          <div>
+            <div style="font-size:0.82rem; font-weight:600; color:var(--text-primary);">{{ name }}</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">{{ hint }}</div>
+          </div>
+          <span class="ab-val">{{ unit }}</span>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Risk Classification -->
+      <div class="ab-card">
+        <p class="ab-card-title">Risk Level Classification</p>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:1rem;">
+          After prediction, Flask maps the failure probability to a risk level
+          that drives the colour coding and recommendations on the result page.
+        </p>
+        {% set risks = [
+          ('#22c55e', 'Low',      '< 20%',    'Normal operation. Continue scheduled maintenance.'),
+          ('#38bdf8', 'Moderate', '20 – 39%', 'Elevated risk. Schedule inspection within 72 h.'),
+          ('#f59e0b', 'High',     '40 – 69%', 'Significant risk. Inspect within 24 hours.'),
+          ('#ef4444', 'Critical', '≥ 70%',    'Halt production. Emergency inspection required.'),
+        ] %}
+        {% for color, level, range_, action in risks %}
+        <div class="risk-row">
+          <div class="risk-dot" style="background:{{ color }};"></div>
+          <div style="flex:1;">
+            <div style="font-size:0.82rem; font-weight:700; color:{{ color }};">{{ level }}</div>
+            <div style="font-size:0.75rem; color:var(--text-secondary);">{{ action }}</div>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--text-muted);">{{ range_ }}</span>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Technology Stack -->
+      <div class="ab-card">
+        <p class="ab-card-title">Technology Stack</p>
+        {% set tech = [
+          ('',  'Flask 3.0',       'Web framework & routing'),
+          ('', 'HTML5 / CSS3',    'Page structure & styling'),
+          ('', 'JavaScript',      'Client-side interactions'),
+          ('',  'PyCharm',         'Development IDE'),
+          ('', 'Google Colab',    'Model training environment'),
+        ] %}
+        {% for icon, name, detail in tech %}
+        <div class="tech-row">
+          <div class="tech-icon">{{ icon }}</div>
+          <div>
+            <div class="tech-label">{{ name }}</div>
+            <div class="tech-detail">{{ detail }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+
+
+      <div class="text-center mt-2">
+        <a href="{{ url_for('prediction') }}" class="btn-amber">
+          Try the Prediction Tool &nbsp;→
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────────────── -->
+<footer>
+  <div class="container" style="text-align:center; padding:1.5rem 0;
+    color:var(--text-muted); font-size:0.8rem;">
+    PredictMaint · Predictive Maintenance ·
+    <a href="{{ url_for('prediction') }}" style="color:var(--text-muted);text-decoration:none;">
+      Run a Prediction
+    </a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

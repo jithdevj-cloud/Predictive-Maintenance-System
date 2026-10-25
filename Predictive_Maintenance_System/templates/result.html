@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PredictMaint — Prediction Result</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+<!-- ── Navbar ─────────────────────────────────────────────── -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      <span class="brand-icon">⚙</span>
+      PredictMaint
+    </a>
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('prediction') }}">Predict</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Result Hero ─────────────────────────────────────────── -->
+<div class="page-header">
+  <div class="container">
+    <h1 class="page-title">Prediction Result</h1>
+    <p class="page-subtitle">Analysis complete. Review the failure probability and recommended actions below.</p>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom:4rem;">
+  <div class="row g-4">
+
+    <!-- ── Left: Result & Probabilities ─────────────────── -->
+    <div class="col-lg-7">
+
+      <!-- Verdict badge -->
+      <div class="form-card" style="text-align:center; padding: 2.5rem 2rem;">
+        {% if result.prediction == 1 %}
+        <div class="result-badge failure" style="margin: 0 auto 0.75rem;">
+           &nbsp; Machine Failure Predicted
+        </div>
+        <p style="color:var(--text-secondary); font-size:0.9rem; max-width:420px; margin: 0 auto;">
+          The model indicates a likely equipment failure under the current operating conditions.
+          Immediate maintenance inspection is advised.
+        </p>
+        {% else %}
+        <div class="result-badge no-failure" style="margin: 0 auto 0.75rem;">
+           &nbsp; No Failure Predicted
+        </div>
+        <p style="color:var(--text-secondary); font-size:0.9rem; max-width:420px; margin: 0 auto;">
+          The model indicates normal operating conditions with low failure risk.
+          Continue standard monitoring and scheduled maintenance.
+        </p>
+        {% endif %}
+
+        <div class="mt-3">
+          <span class="risk-badge {{ result.risk_color }}">
+            Risk Level: {{ result.risk_level }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Probability bars -->
+      <div class="probability-bar-wrap">
+        <p class="form-section-title">Failure Probability Breakdown</p>
+
+        <!-- No Failure -->
+        <div class="mb-4">
+          <div class="prob-label">
+            <span>No Failure Probability</span>
+          </div>
+          <div class="prob-value" style="color: var(--success);">
+            {{ result.no_failure_pct }}%
+          </div>
+          <div class="prob-bar">
+            <div class="prob-fill success"
+                 data-width="{{ result.no_failure_pct }}"
+                 style="width:0%;"></div>
+          </div>
+        </div>
+
+        <!-- Failure -->
+        <div>
+          <div class="prob-label">
+            <span>Failure Probability</span>
+          </div>
+          <div class="prob-value" style="color: var(--danger);">
+            {{ result.failure_pct }}%
+          </div>
+          <div class="prob-bar">
+            <div class="prob-fill danger"
+                 data-width="{{ result.failure_pct }}"
+                 style="width:0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="recommendation-card">
+        <p class="form-section-title">Maintenance Recommendations</p>
+
+        {% if result.prediction == 1 %}
+          {% if result.risk_level == 'Critical' %}
+          {% set recs = [
+            ('danger',  'Halt production immediately and schedule an emergency maintenance inspection.'),
+            ('danger',  'Examine tool wear, torque levels, and thermal readings before restarting.'),
+            ('warning', 'Replace worn tooling components and recalibrate rotational parameters.'),
+            ('warning', 'Log this event in the maintenance history and notify plant management.'),
+            ('success', 'After repair, run a supervised test cycle before returning to full production.')
+          ] %}
+          {% else %}
+          {% set recs = [
+            ('warning', 'Schedule a maintenance inspection within the next 24 hours.'),
+            ('warning', 'Monitor tool wear accumulation closely; consider early tool replacement.'),
+            ('warning', 'Check heat dissipation pathways if process temperature is elevated.'),
+            ('success', 'Reduce machine load temporarily to lower overstrain risk.'),
+            ('success', 'Review recent operational logs for anomalies in speed and torque readings.')
+          ] %}
+          {% endif %}
+        {% else %}
+          {% if result.risk_level == 'Moderate' %}
+          {% set recs = [
+            ('warning', 'Schedule a routine inspection within the next 72 hours as a precaution.'),
+            ('success', 'Continue monitoring tool wear, especially if it exceeds 150 minutes.'),
+            ('success', 'Ensure process temperatures remain within the expected operating range.'),
+            ('success', 'No immediate action required; maintain regular maintenance intervals.')
+          ] %}
+          {% else %}
+          {% set recs = [
+            ('success', 'Equipment is operating within normal parameters — no immediate action needed.'),
+            ('success', 'Continue routine preventive maintenance on the scheduled timetable.'),
+            ('success', 'Log current sensor readings as a baseline for future comparison.'),
+            ('success', 'Inspect tool wear at the next scheduled production break.')
+          ] %}
+          {% endif %}
+        {% endif %}
+
+        {% for color, text in recs %}
+        <div class="rec-item">
+          <div class="rec-dot {{ color }}"></div>
+          <div class="rec-text">{{ text }}</div>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <!-- ── Right: Input Summary ──────────────────────────── -->
+    <div class="col-lg-5">
+      <div class="input-summary-card" style="position:sticky; top:80px;">
+        <p class="input-summary-title">Input Parameters Used</p>
+
+        {% set type_map = {'L': 'Low Quality (L)', 'M': 'Medium Quality (M)', 'H': 'High Quality (H)'} %}
+        <div class="summary-row">
+          <span class="summary-key">Product Type</span>
+          <span class="summary-val">{{ type_map.get(result.machine_type, result.machine_type) }}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-key">Air Temperature</span>
+          <span class="summary-val">{{ result.air_temp }} K</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-key">Process Temp</span>
+          <span class="summary-val">{{ result.process_temp }} K</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-key">Rotational Speed</span>
+          <span class="summary-val">{{ result.rot_speed }} rpm</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-key">Torque</span>
+          <span class="summary-val">{{ result.torque }} Nm</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-key">Tool Wear</span>
+          <span class="summary-val">{{ result.tool_wear }} min</span>
+        </div>
+
+        <hr class="divider" style="margin:1.25rem 0;"/>
+
+        <!-- Model info -->
+        <div style="margin-bottom:0.85rem;">
+          <p class="input-summary-title">Model Details</p>
+          <div class="summary-row">
+            <span class="summary-key">Algorithm</span>
+            <span class="summary-val mono">XGBoost</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-key">Estimators</span>
+            <span class="summary-val mono">300</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-key">Dataset</span>
+            <span class="summary-val mono">AI4I 2020</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-key">Test Split</span>
+            <span class="summary-val mono">20%</span>
+          </div>
+        </div>
+
+        <hr class="divider" style="margin:1.25rem 0;"/>
+
+        <div class="d-flex flex-column gap-2">
+          <a href="{{ url_for('prediction') }}" class="btn-predict" style="justify-content:center;">
+            ← Run Another Prediction
+          </a>
+          <a href="{{ url_for('index') }}" class="btn-outline-cyan" style="justify-content:center;">
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <p>PredictMaint · Predictive Maintenance·
+      <a href="{{ url_for('about') }}"></a>
+    </p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

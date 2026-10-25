@@ -1,0 +1,326 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Tokens ───────────────────────────────────────────── */
+:root {
+  --bg: #1B1D21;
+  --bg-panel: #24272C;
+  --bg-panel-raised: #2B2F35;
+  --border: #363B42;
+  --border-soft: #2E3239;
+
+  --text: #ECEDEE;
+  --text-muted: #9BA1A8;
+  --text-dim: #6B717A;
+
+  --amber: #F2A93B;
+  --amber-dim: rgba(242, 169, 59, 0.14);
+  --rust: #D8623E;
+  --rust-dim: rgba(216, 98, 62, 0.14);
+  --ok: #4C9A7D;
+  --ok-dim: rgba(76, 154, 125, 0.14);
+
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  scroll-behavior: smooth;
+}
+
+a { text-decoration: none; }
+
+/* ── Navbar ───────────────────────────────────────────── */
+.navbar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 1.1rem 0;
+}
+
+.navbar-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.55rem;
+  letter-spacing: 0.02em;
+  color: var(--text) !important;
+  text-transform: uppercase;
+}
+
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted) !important;
+  padding: 0.4rem 1rem !important;
+  border-radius: 3px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.nav-link:hover { color: var(--text) !important; }
+
+.nav-link.active {
+  color: var(--amber) !important;
+  background: var(--amber-dim);
+}
+
+.navbar-toggler {
+  border-color: var(--border);
+}
+
+.navbar-toggler-icon {
+  filter: invert(1);
+}
+
+/* ── Hero ─────────────────────────────────────────────── */
+.hero {
+  padding: 5.5rem 0 4rem;
+  position: relative;
+  background:
+    radial-gradient(ellipse 900px 500px at 85% 0%, rgba(242, 169, 59, 0.08), transparent 60%),
+    var(--bg);
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: var(--amber-dim);
+  border: 1px solid rgba(242, 169, 59, 0.3);
+  padding: 0.35rem 0.85rem;
+  border-radius: 3px;
+  margin-bottom: 1.75rem;
+}
+
+.hero-tag::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 0 3px var(--amber-dim);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+.hero-title span {
+  display: block;
+  color: var(--amber);
+}
+
+.hero-subtitle {
+  font-size: 1.08rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+  max-width: 34rem;
+  margin-bottom: 2.25rem;
+}
+
+/* ── Buttons ──────────────────────────────────────────── */
+.btn-predict {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #1B1D21;
+  background: var(--amber);
+  padding: 0.85rem 1.6rem;
+  border-radius: 3px;
+  font-weight: 500;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-predict:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(242, 169, 59, 0.25);
+  color: #1B1D21;
+}
+
+.btn-outline-cyan {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 0.85rem 1.6rem;
+  border-radius: 3px;
+  font-weight: 500;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-outline-cyan:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+/* ── Stat grid ────────────────────────────────────────── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  max-width: 34rem;
+  background: var(--border-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stat-card {
+  background: var(--bg-panel);
+  padding: 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stat-number {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: var(--text);
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── Sensor / form card ───────────────────────────────── */
+.form-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.5rem 1.5rem 1.25rem;
+}
+
+.form-section-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.88rem;
+}
+
+.summary-key {
+  color: var(--text-muted);
+}
+
+.summary-val {
+  font-weight: 500;
+}
+
+.text-cyan {
+  color: var(--text);
+}
+
+/* ── Risk gauge (signature element) ──────────────────── */
+.gauge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.gauge-dial { flex-shrink: 0; }
+
+.gauge-track { fill: none; stroke: var(--border); stroke-width: 10; }
+
+.gauge-fill {
+  fill: none;
+  stroke: var(--rust);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.gauge-needle-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  fill: var(--text);
+}
+
+.gauge-copy { display: flex; flex-direction: column; gap: 0.2rem; }
+
+.risk-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  border-radius: 3px;
+  width: fit-content;
+}
+
+.risk-badge.warning {
+  color: var(--rust);
+  background: var(--rust-dim);
+  border: 1px solid rgba(216, 98, 62, 0.3);
+}
+
+.risk-badge.ok {
+  color: var(--ok);
+  background: var(--ok-dim);
+  border: 1px solid rgba(76, 154, 125, 0.3);
+}
+
+/* ── Footer ───────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border-soft);
+  padding: 1.75rem 0;
+}
+
+footer p {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+  margin: 0;
+  text-align: center;
+}
+
+footer a {
+  color: var(--text-muted);
+}
+
+footer a:hover { color: var(--amber); }
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 991px) {
+  .stat-grid { max-width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
